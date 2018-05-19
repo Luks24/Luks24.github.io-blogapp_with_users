@@ -1,0 +1,32 @@
+body{
+    background-color: red;
+    min-height: 100%;
+    
+}
+a{
+    font-size: 1.7em;
+}
+#blogdiv{
+    width: 60%;
+    margin: 2% auto;
+}
+
+h1{
+    text-align: center;
+}
+#delete{
+    display: inline;
+}
+#padd{
+    padding-top: 1%;
+}
+#rightcenter{
+    text-align: right;
+}
+#size{
+
+    min-width: 80%;
+}
+.ui.divided.items>.item {
+    min-height: 15%;
+}

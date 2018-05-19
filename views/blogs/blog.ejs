@@ -1,0 +1,30 @@
+<% include ../partials/header%>
+<div id="size" class="ui main text container">
+    <div class="ui huge header">Blog</div>
+    <div class="ui top attached segment">
+        <div class="ui divided items">
+            <! looping trough all blog post and displaying conntent >
+            <% blogs.reverse().forEach(function(blog){ %>
+                <div class="item">
+                    <div class="image">
+                         <img src="<%=blog.image %>" alt="">
+                    </div>
+                    <div class="content">
+                        <a class="header" href="/blogs/<%= blog._id%>"><%=blog.title %></a>
+                        <div class="meta">
+                            <span><%=blog.created.toDateString() %></span>
+                        </div>
+                        <div class="description">
+                            <p><%-blog.body.substring(0, 300) %></p>
+                        </div>
+                        <div class="extra">
+                            <a class="ui flooated basic blue button" href="/blogs/<%= blog._id%>">Read more</a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer%>

@@ -13,7 +13,12 @@ a{
 
 h1{
     text-align: center;
+    padding-bottom: 40px;
 }
+p{
+    margin-top: 40px;
+}
+
 #delete{
     display: inline;
 }
@@ -29,4 +34,21 @@ h1{
 }
 .ui.divided.items>.item {
     min-height: 15%;
+}
+#firstheader{
+    width: 70%;
+    margin: 10% auto;
+    text-align: center;
+    justify-content: center;
+}
+.ui.raised.segment{
+    opacity: 0;
+    animation: 2s fadein 0.8s forwards;
+   
+}
+@keyframes fadein {
+	100% {
+		opacity: 1;
+		margin: 10% auto;
+	}
 }

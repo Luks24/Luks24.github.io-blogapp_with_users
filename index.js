@@ -32,7 +32,7 @@ app.use(methodOverride("_method"));
 
 //Routes
 app.get("/", function(req, res){
-    res.render("index");
+    res.render("first");
 });
 
 // render blogs page and get all blogs data and pass it to blog

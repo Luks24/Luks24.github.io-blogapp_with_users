@@ -10,9 +10,14 @@ const express            = require("express"),
       app                = express(),
       methodOverride     = require("method-override"),
       expressSanitizer   = require("express-sanitizer"),
-
+//model required
       Blog               =require("./models/blogs"),
-      Comment            =require("./models/comment");
+      Comment            =require("./models/comment"),
+      User               =require("./models/user"),
+//Requirements for authentication
+      passport           =require("passport"),
+      LocalStrategy      =require("passport-local");
+
 
 // connecting to database
 mongoose.connect("mongodb://localhost/blog_web_app");
@@ -27,6 +32,22 @@ app.use(expressSanitizer());
 //use method override for put and delete request
 app.use(methodOverride("_method"));
 
+//Setting up passport for users
+app.use(require("express-session")({
+    secret: "this is the secret for the password",
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+app.use(function(req, res, next){
+    res.locals.currentUser = req.user;
+    next();
+});
 
 
 
@@ -119,7 +140,7 @@ app.delete("/blogs/:id", function(req, res){
 
 //NEW comment route
 
-app.get("/blogs/:id/comments/new", function(req, res){
+app.get("/blogs/:id/comments/new",isLoggedIn, function(req, res){
     Blog.findById(req.params.id, function(err, blog){
         if(err){
             console.log(err)
@@ -130,14 +151,14 @@ app.get("/blogs/:id/comments/new", function(req, res){
     
 });
 
-app.post("/blogs/:id/comments", function(req, res){
+app.post("/blogs/:id/comments",isLoggedIn, function(req, res){
     Blog.findById(req.params.id,function(err, blog){
         if(err){
             res.redirect("/blogs");
         }else{
             Comment.create(req.body.comment, function(err, comment){
                 if(err){
-                    console.lof(err);
+                    console.log(err);
                 }else{
                     blog.comments.push(comment);
                     blog.save();
@@ -147,6 +168,49 @@ app.post("/blogs/:id/comments", function(req, res){
         }
     })
 });
+
+//Authorization routes
+
+app.get("/register", function(req, res){
+    res.render("register");
+});
+
+//post route for sign up
+app.post("/register", function(req, res){
+    const newUser = new User({username: req.body.username});
+    User.register(newUser, req.body.password, function(err, user){
+        if(err){
+            console.log(err)
+            return res.render("register");
+        }
+        passport.authenticate("local")(req, res, function(){
+            res.redirect("/blogs");
+        })
+    })
+})
+
+//Login templet
+app.get("/login", function(req, res){
+    res.render("login");
+});
+//post route for Login
+app.post("/login",passport.authenticate("local",{successRedirect: "/blogs", failureRedirect: "/login"}), function(req, res){
+
+});
+//logout route
+app.get("/logout", function(req, res){
+    req.logout();
+    res.redirect("/blogs");
+})
+
+//middlewear
+
+function isLoggedIn(req, res, next){
+    if (req.isAuthenticated()){
+        return next();
+    }
+    res.redirect("/login");
+}
 
 /*listening for app
 

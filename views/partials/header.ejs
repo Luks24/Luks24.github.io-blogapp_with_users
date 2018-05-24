@@ -20,8 +20,18 @@
               New post
             </a>
             <div class="right menu">
-              <a class="red item">
+            <%  if(!currentUser){ %>
+              <a class="red item" href="/register">
+                Sign up
+              </a>
+              <a class="red item" href="/login">
+                Login
+              </a>
+            <%}else{%>
+              <a class="red item" href="#">Signed in as <%=currentUser.username %></a>
+              <a class="red item" href="/logout">
                 Logout
               </a>
+            <%}%>
           </div>
         </div> 

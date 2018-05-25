@@ -7,6 +7,7 @@
                 <img class="ui centered rounded image" src="<%=blog.image %>" alt="">
                 <div class="content">
                     <span><%=blog.created.toDateString() %></span>
+                    <span>Created by <%= blog.author.username %></span>
                 </div>
                 <div class="description">
                         <! evaluets the body as html>
@@ -27,7 +28,7 @@
         <%blog.comments.forEach(function(comment){%>
             <div class="ui top attached segment">
                 <p>
-                    <strong><%=comment.author %></strong> - <%=comment.text %>
+                    <strong><%=comment.author.username %></strong> - <%=comment.text %>
                     <span id="rightcenter"><%=comment.created.toDateString() %></span> 
                 </p>   
             </div>

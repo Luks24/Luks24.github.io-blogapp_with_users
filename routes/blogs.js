@@ -56,18 +56,18 @@ router.get("/blogs/:id", function(req, res){
 
 //EDIT route
 
-router.get("/blogs/:id/edit", function(req, res){
+router.get("/blogs/:id/edit",checkUserBlog, function(req, res){
     Blog.findById(req.params.id, function(err, foundBlog){
         if(err){
-            res.redirect("/blogs");
+            console.log(err);
         }else{
-            res.render("blogs/edit", {blog: foundBlog});
-        };
-    });
+            res.render("blogs/edit", {blog: foundBlog});  
+        }      
+    });   
 });
 
 //UPDATE route
-router.put("/blogs/:id", function(req, res){
+router.put("/blogs/:id",checkUserBlog, function(req, res){
     req.body.blog.body = req.sanitize(req.body.blog.body); 
     Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, updatedBlog){
         if(err){
@@ -79,7 +79,7 @@ router.put("/blogs/:id", function(req, res){
 });
 
 //DELETE route
-router.delete("/blogs/:id", function(req, res){
+router.delete("/blogs/:id",checkUserBlog, function(req, res){
     Blog.findByIdAndRemove(req.params.id, function(err, updatedBlog){
         if(err){
             res.redirect("/blogs");
@@ -94,5 +94,23 @@ function isLoggedIn(req, res, next){
         return next();
     }
     res.redirect("/login");
-}
+};
+function checkUserBlog(req, res, next){
+    if(req.isAuthenticated()){
+        Blog.findById(req.params.id, function(err, foundBlog){
+            if(err){
+                res.redirect("/blogs");
+            }else{
+                //if user owns blog
+                if(foundBlog.author.id.equals(req.user._id)){
+                    next(); 
+                }else{
+                    res.redirect("back");
+                }   
+            };
+        });
+    }else{
+        res.redirect("back");
+    }  
+};
 module.exports = router;

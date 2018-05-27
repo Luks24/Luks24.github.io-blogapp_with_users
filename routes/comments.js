@@ -45,13 +45,20 @@ router.post("/blogs/:id/comments",middleware.isLoggedIn, function(req, res){
 });
 //edit
 router.get("/blogs/:id/comments/:comment_id/edit",middleware.checkUserComment, function(req, res){
-    Comment.findById(req.params.comment_id, function(err, foundComment){
-        if(err){
-            req.flash("error", "Wrong user.")
+    Blog.findById(req.params.id, function(err, foundBlog){
+        if(err || !foundBlog){
+            req.flash("error", "Blog not found");
+            res.redirect("back");
         }else{
-            res.render("comments/edit", {blog_id: req.params.id, comment: foundComment});
-        }
-    })
+            Comment.findById(req.params.comment_id, function(err, foundComment){
+                if(err){
+                    req.flash("error", "Wrong user.")
+                }else{
+                    res.render("comments/edit", {blog_id: req.params.id, comment: foundComment});
+                }
+            });  
+        };      
+    }); 
 });
 //update
 router.put("/blogs/:id/comments/:comment_id",middleware.checkUserComment, function(req, res){

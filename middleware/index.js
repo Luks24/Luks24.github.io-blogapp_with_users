@@ -8,7 +8,7 @@ const middlewareObject ={}
 middlewareObject.checkUserBlog = function (req, res, next){
     if(req.isAuthenticated()){
         Blog.findById(req.params.id, function(err, foundBlog){
-            if(err){
+            if(err || !foundBlog){
                 req.flash("error", "Bloged not found.")
                 res.redirect("/blogs");
             }else{
@@ -29,7 +29,8 @@ middlewareObject.checkUserBlog = function (req, res, next){
 middlewareObject.checkUserComment = function (req, res, next){
     if(req.isAuthenticated()){
         Comment.findById(req.params.comment_id, function(err, foundComment){
-            if(err){
+            if(err || !foundComment){
+                req.flash("error", "Comment not found.")
                 res.redirect("back");
             }else{
                 //if user owns comment

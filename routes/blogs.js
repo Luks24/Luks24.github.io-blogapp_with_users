@@ -60,7 +60,7 @@ router.get("/blogs/:id", function(req, res){
 router.get("/blogs/:id/edit",middleware.checkUserBlog, function(req, res){
     Blog.findById(req.params.id, function(err, foundBlog){
         if(err){
-            console.log(err);
+            req.flash("error", "Blog not found")
         }else{
             res.render("blogs/edit", {blog: foundBlog});  
         }      
@@ -72,6 +72,7 @@ router.put("/blogs/:id",middleware.checkUserBlog, function(req, res){
     req.body.blog.body = req.sanitize(req.body.blog.body); 
     Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, updatedBlog){
         if(err){
+            req.flash("error", "Blog not found")
             res.redirect("/blogs");
         }else{
             res.redirect("/blogs/" + req.params.id);
@@ -83,6 +84,7 @@ router.put("/blogs/:id",middleware.checkUserBlog, function(req, res){
 router.delete("/blogs/:id",middleware.checkUserBlog, function(req, res){
     Blog.findByIdAndRemove(req.params.id, function(err, updatedBlog){
         if(err){
+            req.flash("error", "can't delete Blog post.")
             res.redirect("/blogs");
         }else{
             res.redirect("/blogs");

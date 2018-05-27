@@ -10,6 +10,7 @@ const express            = require("express"),
       app                = express(),
       methodOverride     = require("method-override"),
       expressSanitizer   = require("express-sanitizer"),
+      flash              = require("connect-flash"),
 //model required
       Blog               =require("./models/blogs"),
       Comment            =require("./models/comment"),
@@ -36,6 +37,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
 //use method override for put and delete request
 app.use(methodOverride("_method"));
+//use flash messages
+app.use(flash());
 
 
 
@@ -53,6 +56,8 @@ passport.deserializeUser(User.deserializeUser());
 //seting currentUser
 app.use(function(req, res, next){
     res.locals.currentUser = req.user;
+    res.locals.error    = req.flash("error");
+    res.locals.success    = req.flash("success");
     next();
 });
 //Using the routes

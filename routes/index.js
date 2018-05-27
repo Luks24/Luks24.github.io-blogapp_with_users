@@ -26,10 +26,10 @@ router.post("/register", function(req, res){
     const newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password, function(err, user){
         if(err){
-            console.log(err)
-            return res.render("register");
-        }
+            return res.render("register", {"error": err.message});
+          }
         passport.authenticate("local")(req, res, function(){
+            req.flash("success", "You registered successfuly.")
             res.redirect("/blogs");
         })
     })
@@ -46,6 +46,7 @@ router.post("/login",passport.authenticate("local",{successRedirect: "/blogs", f
 //logout route
 router.get("/logout", function(req, res){
     req.logout();
+    req.flash("success", "Logged out.")
     res.redirect("/blogs");
 })
 

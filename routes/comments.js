@@ -2,8 +2,8 @@ const express  = require("express"),
       router   = express.Router(),
 
       Blog               =require("../models/blogs"),
-      Comment            =require("../models/comment");
-      middleware         =require("../middleware")
+      Comment            =require("../models/comment"),
+      middleware         =require("../middleware");
 
 //Comment routes
 
@@ -27,7 +27,7 @@ router.post("/blogs/:id/comments",middleware.isLoggedIn, function(req, res){
         }else{
             Comment.create(req.body.comment, function(err, comment){
                 if(err){
-                    console.log(err);
+                    req.flash("error", "Something went wrong.")
                 }else{
                     //add username and id to comment
                     comment.author.id = req.user._id;
@@ -36,6 +36,7 @@ router.post("/blogs/:id/comments",middleware.isLoggedIn, function(req, res){
                     comment.save();
                     blog.comments.push(comment);
                     blog.save();
+                    req.flash("success", "You added a comment")
                     res.redirect("/blogs/" + blog._id)
                 }
             })
@@ -46,7 +47,7 @@ router.post("/blogs/:id/comments",middleware.isLoggedIn, function(req, res){
 router.get("/blogs/:id/comments/:comment_id/edit",middleware.checkUserComment, function(req, res){
     Comment.findById(req.params.comment_id, function(err, foundComment){
         if(err){
-            console.log(err);
+            req.flash("error", "Wrong user.")
         }else{
             res.render("comments/edit", {blog_id: req.params.id, comment: foundComment});
         }
@@ -56,8 +57,10 @@ router.get("/blogs/:id/comments/:comment_id/edit",middleware.checkUserComment, f
 router.put("/blogs/:id/comments/:comment_id",middleware.checkUserComment, function(req, res){
     Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment){
         if(err){
+            req.flash("error", "can't update comment")
             res.redirect("back");
         }else{
+            req.flash("success", "Comment updated")
             res.redirect("/blogs/" + req.params.id )
         }
     })
@@ -67,8 +70,10 @@ router.put("/blogs/:id/comments/:comment_id",middleware.checkUserComment, functi
 router.delete("/blogs/:id/comments/:comment_id",middleware.checkUserComment, function(req, res){
     Comment.findByIdAndRemove(req.params.comment_id, function(err){
         if(err){
+            req.flash("success", "can't delete comment.")
             res.redirect("back");
         }else{
+            req.flash("success", "Comment deleted.")
             res.redirect("/blogs/" + req.params.id)
         }
     })

@@ -3,12 +3,13 @@ const express  = require("express"),
 
       Blog               =require("../models/blogs"),
       Comment            =require("../models/comment");
+      middleware         =require("../middleware")
 
 //Comment routes
 
 //NEW comment route
 
-router.get("/blogs/:id/comments/new",isLoggedIn, function(req, res){
+router.get("/blogs/:id/comments/new",middleware.isLoggedIn, function(req, res){
     Blog.findById(req.params.id, function(err, blog){
         if(err){
             console.log(err)
@@ -19,7 +20,7 @@ router.get("/blogs/:id/comments/new",isLoggedIn, function(req, res){
     
 });
 //crate route
-router.post("/blogs/:id/comments",isLoggedIn, function(req, res){
+router.post("/blogs/:id/comments",middleware.isLoggedIn, function(req, res){
     Blog.findById(req.params.id,function(err, blog){
         if(err){
             res.redirect("/blogs");
@@ -42,7 +43,7 @@ router.post("/blogs/:id/comments",isLoggedIn, function(req, res){
     })
 });
 //edit
-router.get("/blogs/:id/comments/:comment_id/edit",checkUserComment, function(req, res){
+router.get("/blogs/:id/comments/:comment_id/edit",middleware.checkUserComment, function(req, res){
     Comment.findById(req.params.comment_id, function(err, foundComment){
         if(err){
             console.log(err);
@@ -52,7 +53,7 @@ router.get("/blogs/:id/comments/:comment_id/edit",checkUserComment, function(req
     })
 });
 //update
-router.put("/blogs/:id/comments/:comment_id",checkUserComment, function(req, res){
+router.put("/blogs/:id/comments/:comment_id",middleware.checkUserComment, function(req, res){
     Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment){
         if(err){
             res.redirect("back");
@@ -63,7 +64,7 @@ router.put("/blogs/:id/comments/:comment_id",checkUserComment, function(req, res
 });
 
 //destroy route
-router.delete("/blogs/:id/comments/:comment_id",checkUserComment, function(req, res){
+router.delete("/blogs/:id/comments/:comment_id",middleware.checkUserComment, function(req, res){
     Comment.findByIdAndRemove(req.params.comment_id, function(err){
         if(err){
             res.redirect("back");
@@ -72,31 +73,5 @@ router.delete("/blogs/:id/comments/:comment_id",checkUserComment, function(req, 
         }
     })
 })
-
-function isLoggedIn(req, res, next){
-    if (req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
-
-function checkUserComment(req, res, next){
-    if(req.isAuthenticated()){
-        Comment.findById(req.params.comment.id, function(err, foundComment){
-            if(err){
-                res.redirect("back");
-            }else{
-                //if user owns comment
-                if(foundComment.author.id.equals(req.user._id)){
-                    next(); 
-                }else{
-                    res.redirect("back");
-                }   
-            };
-        });
-    }else{
-        res.redirect("back");
-    }  
-};
 
 module.exports = router;

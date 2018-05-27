@@ -1,6 +1,7 @@
 const express  = require("express"),
       router   = express.Router(),
-      Blog               =require("../models/blogs");
+      Blog               =require("../models/blogs"),
+      middleware         =require("../middleware");
 
 // render blogs page and get all blogs data and pass it to blog
 router.get("/blogs", function(req, res){
@@ -15,12 +16,12 @@ router.get("/blogs", function(req, res){
 
 //NEW route
 
-router.get("/blogs/new", isLoggedIn, function(req, res){
+router.get("/blogs/new", middleware.isLoggedIn, function(req, res){
     res.render("blogs/new");
 });
 
 //CREATE route
-router.post("/blogs", isLoggedIn,function(req, res){
+router.post("/blogs", middleware.isLoggedIn,function(req, res){
     req.body.blog.body = req.sanitize(req.body.blog.body);
     const  title  = req.body.blog.title,
            image  = req.body.blog.image,
@@ -56,7 +57,7 @@ router.get("/blogs/:id", function(req, res){
 
 //EDIT route
 
-router.get("/blogs/:id/edit",checkUserBlog, function(req, res){
+router.get("/blogs/:id/edit",middleware.checkUserBlog, function(req, res){
     Blog.findById(req.params.id, function(err, foundBlog){
         if(err){
             console.log(err);
@@ -67,7 +68,7 @@ router.get("/blogs/:id/edit",checkUserBlog, function(req, res){
 });
 
 //UPDATE route
-router.put("/blogs/:id",checkUserBlog, function(req, res){
+router.put("/blogs/:id",middleware.checkUserBlog, function(req, res){
     req.body.blog.body = req.sanitize(req.body.blog.body); 
     Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, updatedBlog){
         if(err){
@@ -79,7 +80,7 @@ router.put("/blogs/:id",checkUserBlog, function(req, res){
 });
 
 //DELETE route
-router.delete("/blogs/:id",checkUserBlog, function(req, res){
+router.delete("/blogs/:id",middleware.checkUserBlog, function(req, res){
     Blog.findByIdAndRemove(req.params.id, function(err, updatedBlog){
         if(err){
             res.redirect("/blogs");
@@ -89,28 +90,4 @@ router.delete("/blogs/:id",checkUserBlog, function(req, res){
     });
 });
 
-function isLoggedIn(req, res, next){
-    if (req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-};
-function checkUserBlog(req, res, next){
-    if(req.isAuthenticated()){
-        Blog.findById(req.params.id, function(err, foundBlog){
-            if(err){
-                res.redirect("/blogs");
-            }else{
-                //if user owns blog
-                if(foundBlog.author.id.equals(req.user._id)){
-                    next(); 
-                }else{
-                    res.redirect("back");
-                }   
-            };
-        });
-    }else{
-        res.redirect("back");
-    }  
-};
 module.exports = router;

@@ -25,8 +25,10 @@ const blogRoutes = require("./routes/blogs"),
       commentsRoutes = require("./routes/comments"),
       indexRoutes    = require("./routes/index");
 
+    
 // connecting to database
-mongoose.connect("mongodb://localhost/blog_web_app");
+mongoose.connect("mongodb://luka:13slatna13!@ds137600.mlab.com:37600/blog_web_app");
+//mongoose.connect("mongodb://localhost/blog_web_app");
 //set ejs for view
 app.set("view engine", "ejs");
 //set express for serving our style sheet
@@ -70,14 +72,15 @@ app.use(indexRoutes);
 
 
 
-/*listening for app
+
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("Server started");
 });
-*/
 
 
 
+/*listening for app
 app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+*/

@@ -70,15 +70,14 @@ app.use(indexRoutes);
 
 
 
-
+/*listening for app
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("Server started");
 });
+*/
 
 
 
-/*listening for app
 app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
-*/

@@ -61,7 +61,7 @@ p{
     text-align: center;
     max-width: 60%;
 }
-@media only screen and (max-width: 730px) {
+@media only screen and (max-width: 760px) {
     .ui.raised.segment {
         min-width: 100%;
         font-size: 20px;
@@ -77,3 +77,55 @@ p{
         text-align: center;
     }
 }
+/*
+navbar
+*/
+.Navbar {
+    background-color: black;
+    display: flex;
+    padding: 16px;
+    font-family: sans-serif;
+    margin-bottom: 25px;
+    font-size: 1.3em;
+    color: rgb(42, 72, 240)!important;
+  }
+  .Navbar__Link {
+    padding-right: 8px;
+    margin: 5px 25px;
+    color: rgb(42, 72, 240);
+  }
+  .Navbar__Items {
+    display: flex;
+
+  }
+  .Navbar__Items--right {
+    margin-left:auto;
+  }
+  .Navbar__Link-toggle {
+    display: none;
+  }
+  @media only screen and (max-width: 980px) {
+    .Navbar__Items,
+    .Navbar {
+      flex-direction: column;
+    }
+  .Navbar__Items {
+      display:none;
+    }
+  .Navbar__Items--right {
+      margin-left:0;
+    }
+  .Navbar__ToggleShow {
+      display: flex;
+    }
+  .Navbar__Link-toggle {
+      align-self: flex-end;
+      display: initial;
+      position: absolute;
+      cursor: pointer;
+     } 
+  }
+  #iconpad{
+      padding-right: 35px;
+      color:rgb(64, 91, 247);
+  }

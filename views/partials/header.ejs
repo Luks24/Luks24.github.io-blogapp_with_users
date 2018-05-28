@@ -9,37 +9,55 @@
     <link rel="stylesheet" type="text/css" href="/stylesheet/personal.css">
 </head>
     <body>
-        <div class="ui inverted stackable menu">
-            <a class="red item" href="/">
-              Home
-            </a>
-            <a class="red item" href="/blogs">
-              Blog
-            </a>
-            <a class="red item" href="/blogs/new">
-              New post
-            </a>
-            <div class="right menu">
+        <div class="Navbar">
+          <div class="Navbar__Link Navbar__Link-brand">
+              <a class="red item" href="/">
+                Home
+              </a>
+           </div>
+           <div class="Navbar__Link Navbar__Link-toggle">
+             <i id="iconpad"class="bars icon"></i>
+           </div>
+         <nav class="Navbar__Items">
+           <div class="Navbar__Link">
+              <a class="red item" href="/blogs">
+                Blog
+              </a>
+           </div>
+           <div class="Navbar__Link">
+              <a class="red item" href="/blogs/new">
+                New post
+              </a>
+           </div>
+         </nav>
+         <nav class="Navbar__Items Navbar__Items--right">
             <%  if(!currentUser){ %>
+           <div class="Navbar__Link">
               <a class="red item" href="/register">
                 Sign up
               </a>
+           </div>
+           <div class="Navbar__Link">
               <a class="red item" href="/login">
                 Login
               </a>
-            <%}else{%>
+           </div>
+           <%}else{%>
+           <div class="Navbar__Link">
               <a class="red item" href="#">Signed in as <%=currentUser.username %></a>
+           </div>
+           <div class="Navbar__Link">
               <a class="red item" href="/logout">
                 Logout
               </a>
-            <%}%>
-          </div>
-        </div>
-        <% if(error && error.length > 0) {%>
+           </div>
+           <%}%>
+         </nav>
+       </div>
+       <% if(error && error.length > 0) {%>
         <div  class="ui red inverted segment flash"><%= error %></div>
         <%}%>
         <% if(success && success.length > 0) {%>
         <div  class="ui green inverted segment flash"><%= success %></div>
         <%}%>
-
         

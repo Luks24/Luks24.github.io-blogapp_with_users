@@ -27,8 +27,8 @@ const blogRoutes = require("./routes/blogs"),
 
     
 // connecting to database
-mongoose.connect("mongodb://luka:13slatna13!@ds137600.mlab.com:37600/blog_web_app");
-//mongoose.connect("mongodb://localhost/blog_web_app");
+
+mongoose.connect("mongodb://localhost/blog_web_app");
 //set ejs for view
 app.set("view engine", "ejs");
 //set express for serving our style sheet
